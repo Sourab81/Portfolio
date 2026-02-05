@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 
 const Navbar = () => {
   const iconLinks = [
-    { icon: <FaLinkedin />, url: "https://www.linkedin.com/in/govind-patel-h552006/" },
-    { icon: <FaGithub />, url: "https://github.com/govindpatel552006" },
-    { icon: <FaInstagram />, url: "https://www.instagram.com/govind_.19?igsh=MWJ5aGlzZ2JxZXg2dA==" },
-    { icon: <FaSquareXTwitter />, url: "https://x.com/Govindpatel94" },
+    { icon: <FaLinkedin />, url: "https://www.linkedin.com/in/sourabh-malviya-a54519352/" },
+    { icon: <FaGithub />, url: "https://github.com/Sourab81" },
+    { icon: <FaInstagram />, url: "https://www.instagram.com/_sourabh_.1111/" },
+    { icon: <FaSquareXTwitter />, url: "https://x.com/SourabhMal89915" },
   ];
 
   
@@ -36,7 +36,7 @@ const Navbar = () => {
         whileHover={{ scale: 1.1, rotate: 5 }}
         className="text-4xl font-extrabold bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 bg-clip-text text-transparent cursor-pointer"
       >
-        GP
+        SM
       </motion.div>
 
     

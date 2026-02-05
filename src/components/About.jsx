@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import aboutImg from "../assets/projects/aboutpic.jpg";
+import aboutImg from "../assets/projects/aboutpic.png";
 import { ABOUT_TEXT,ABOUT_TEXT1} from "../constants/index.js";
 
 const About = ({Resumebtn}) => {

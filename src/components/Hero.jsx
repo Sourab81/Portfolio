@@ -18,7 +18,7 @@ const Hero = () => {
               transition={{ duration: 0.5, delay: 0.3 }}
               className="pb-6 text-6xl font-thin tracking-tight lg:mt-6 lg:text-8xl"
             >
-              Govind Patel
+              Sourabh Malviya
             </motion.h1>
 
             <motion.span
@@ -50,7 +50,7 @@ const Hero = () => {
   animate={{ x: 0, opacity: 1 }}     
   transition={{ duration: 0.8, delay: 0.8 }}
   src={profile}
-  alt="govind"
+  // alt="govind"
   className="rounded-xl w-80 h-[380px] object-cover object-top"
 />
 

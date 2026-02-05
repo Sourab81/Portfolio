@@ -1,11 +1,10 @@
 import React from "react";
-import resume from "../assets/projects/GovindResume.pdf";
+import resume from "../assets/projects/SourabhResume.pdf";
 
 const Resume = () => {
   const handleDownload = () => {
     const link = document.createElement("a");
-    link.href = resume;  
-    link.download = "Govind_Resume.pdf";
+    link.href = resume; 
     link.click();
   };
 
