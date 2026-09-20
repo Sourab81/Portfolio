@@ -1,66 +1,116 @@
 import { motion } from "framer-motion";
-import { RiReactjsLine } from "react-icons/ri";
+import {
+  RiReactjsLine,
+  RiCodeSSlashLine,
+} from "react-icons/ri";
 import { TbBrandMongodb } from "react-icons/tb";
-import { FaNodeJs, FaGithub, FaJava } from "react-icons/fa";
-import { SiMysql, SiExpress, SiHtml5, SiCss3, SiJavascript } from "react-icons/si";
+import {
+  FaNodeJs,
+  FaGithub,
+  FaJava,
+  FaPython,
+} from "react-icons/fa";
+import {
+  SiMysql,
+  SiExpress,
+  SiHtml5,
+  SiCss3,
+  SiJavascript,
+  SiTailwindcss,
+  SiNextdotjs,
+  SiCodeigniter,
+} from "react-icons/si";
+
+const GROUPS = [
+  {
+    title: "Frontend",
+    items: [
+      { icon: <SiHtml5 />, name: "HTML5", color: "text-orange-500" },
+      { icon: <SiCss3 />, name: "CSS3", color: "text-blue-500" },
+      { icon: <SiJavascript />, name: "JavaScript", color: "text-yellow-400" },
+      { icon: <RiReactjsLine />, name: "React.js", color: "text-cyan-400" },
+      { icon: <SiTailwindcss />, name: "Tailwind CSS", color: "text-cyan-300" },
+      { icon: <SiNextdotjs />, name: "Next.js", color: "text-white" },
+    ],
+  },
+  {
+    title: "Backend",
+    items: [
+      { icon: <SiExpress />, name: "Express.js", color: "text-gray-300" },
+      { icon: <FaNodeJs />, name: "Node.js", color: "text-green-500" },
+      { icon: <SiCodeigniter />, name: "CodeIgniter (PHP)", color: "text-orange-400" },
+      { icon: <FaJava />, name: "Java", color: "text-red-500" },
+      { icon: <FaPython />, name: "Python", color: "text-yellow-400" },
+      { icon: <RiCodeSSlashLine />, name: "REST APIs", color: "text-purple-400" },
+    ],
+  },
+  {
+    title: "Database & Tools",
+    items: [
+      { icon: <TbBrandMongodb />, name: "MongoDB", color: "text-green-500" },
+      { icon: <SiMysql />, name: "MySQL", color: "text-blue-500" },
+      { icon: <FaGithub />, name: "Git & GitHub", color: "text-white" },
+    ],
+  },
+];
+
+const appear = {
+  hidden: { opacity: 0, y: 20 },
+  show: (index) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: index * 0.08, ease: "easeOut" },
+  }),
+};
 
 const Technologies = () => {
-  const appear = {
-    hidden: { opacity: 0, y: 20 },
-    show: (index) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        delay: index * 0.1,
-        ease: "easeOut",
-      }
-    })
-  };
-
   return (
-    <div className="border-b border-neutral-800 pb-24">
-      <h1 className="my-20 text-center text-4xl">Technologies</h1>
+    <section id="skills" className="scroll-mt-24 border-b border-neutral-800 pb-24">
+      <h1 className="my-20 text-center text-4xl font-heading">Technologies</h1>
 
-      <div className="flex flex-wrap items-center justify-center gap-4">
+      <div className="space-y-14">
+        {GROUPS.map((group, groupIndex) => (
+          <div key={group.title}>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+              className="mb-6 text-center text-2xl font-semibold text-neutral-400"
+            >
+              {group.title}
+            </motion.h2>
 
-        {[
-          <SiHtml5 className="text-4xl text-orange-600" />,
-          <SiCss3 className="text-4xl text-blue-600" />,
-          <SiJavascript className="text-4xl text-yellow-400" />,
-          <RiReactjsLine className="text-4xl text-cyan-400" />,
-          <SiExpress className="text-4xl text-gray-300" />,
-          <FaNodeJs className="text-4xl text-green-600" />,
-          <TbBrandMongodb className="text-4xl text-green-500" />,
-          <SiMysql className="text-4xl text-blue-500" />,
-          <FaJava className="text-4xl text-red-600" />,
-          <FaGithub className="text-4xl text-white" />
-        ].map((icon, index) => (
-          <motion.div
-            key={index}
-            custom={index}
-            variants={appear}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true }}
-            className="rounded-2xl border-4 border-neutral-800 p-4"
-            animate={{
-              y: [0, -10, 0],    
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          >
-            {icon}
-          </motion.div>
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              {group.items.map((item, index) => (
+                <motion.div
+                  key={item.name}
+                  custom={index}
+                  variants={appear}
+                  initial="hidden"
+                  whileInView="show"
+                  viewport={{ once: true }}
+                  className="group relative flex flex-col items-center gap-2 rounded-2xl border-4 border-neutral-800 bg-neutral-900/40 px-6 py-4 transition duration-300 hover:-translate-y-1 hover:border-cyan-500/50"
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{
+                    duration: 3 + (groupIndex + index) * 0.2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.3,
+                  }}
+                >
+                  <span className={`text-4xl ${item.color}`}>{item.icon}</span>
+                  <span className="text-xs text-neutral-400 transition group-hover:text-neutral-200">
+                    {item.name}
+                  </span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         ))}
-
       </div>
-    </div>
+    </section>
   );
 };
 
 export default Technologies;
-
