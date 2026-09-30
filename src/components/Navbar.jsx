@@ -1,51 +1,97 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaLinkedin, FaGithub, FaInstagram } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import { FiMenu, FiX } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 
 const NAV_LINKS = [
   { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
+  { label: "Experience", href: "#experience" },
   { label: "Skills", href: "#skills" },
   { label: "Projects", href: "#projects" },
   { label: "Contact", href: "#contact" },
 ];
 
 const iconLinks = [
-  { icon: <FaLinkedin />, url: "https://www.linkedin.com/in/sourabh-malviya-a54519352/", label: "LinkedIn" },
-  { icon: <FaGithub />, url: "https://github.com/Sourab81", label: "GitHub" },
-  { icon: <FaInstagram />, url: "https://www.instagram.com/_sourabh_.1111/", label: "Instagram" },
-  { icon: <FaSquareXTwitter />, url: "https://x.com/SourabhMal89915", label: "Twitter" },
+  {
+    icon: <FaLinkedin />,
+    url: "https://www.linkedin.com/in/sourabh-malviya-a54519352/",
+    label: "LinkedIn",
+  },
+  {
+    icon: <FaGithub />,
+    url: "https://github.com/Sourab81",
+    label: "GitHub",
+  },
+  {
+    icon: <FaInstagram />,
+    url: "https://www.instagram.com/_sourabh_.1111/",
+    label: "Instagram",
+  },
+  {
+    icon: <FaSquareXTwitter />,
+    url: "https://x.com/SourabhMal89915",
+    label: "Twitter",
+  },
 ];
+
+const SECTION_IDS = NAV_LINKS.map((l) => l.href.replace("#", ""));
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
+  const shouldReduceMotion = useReducedMotion();
 
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
+  // Active-section highlighting via IntersectionObserver
+  useEffect(() => {
+    const observers = [];
 
-  const iconVariants = {
-    hidden: { y: -50, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 500 } },
-  };
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id);
+        },
+        { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  const containerVariants = shouldReduceMotion
+    ? {}
+    : {
+        hidden: {},
+        visible: { transition: { staggerChildren: 0.15 } },
+      };
+
+  const iconVariants = shouldReduceMotion
+    ? {}
+    : {
+        hidden: { y: -50, opacity: 0 },
+        visible: {
+          y: 0,
+          opacity: 1,
+          transition: { type: "spring", stiffness: 500 },
+        },
+      };
 
   return (
     <motion.nav
-      initial={{ y: -80, opacity: 0 }}
+      initial={shouldReduceMotion ? false : { y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 120, damping: 20 }}
-      className="relative sticky top-0 z-40 mt-6 mb-20 flex items-center justify-between rounded-2xl border border-neutral-800/80 bg-neutral-950/70 px-6 py-4 backdrop-blur-md"
+      className="sticky top-0 z-40 mt-6 mb-20 flex items-center justify-between rounded-2xl border border-neutral-800/80 bg-neutral-950/70 px-6 py-4 backdrop-blur-md"
     >
       <a href="#home" aria-label="Go to home">
         <motion.span
-          initial={{ scale: 0 }}
+          initial={shouldReduceMotion ? false : { scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
           whileHover={{ scale: 1.1, rotate: 5 }}
@@ -55,18 +101,29 @@ const Navbar = () => {
         </motion.span>
       </a>
 
-      <div className="hidden items-center gap-8 md:flex">
-        {NAV_LINKS.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            className="text-sm font-medium text-neutral-300 transition-colors duration-200 hover:text-cyan-300"
-          >
-            {link.label}
-          </a>
-        ))}
+      {/* Desktop nav links */}
+      <div className="hidden items-center gap-6 md:flex">
+        {NAV_LINKS.map((link) => {
+          const sectionId = link.href.replace("#", "");
+          const isActive = activeSection === sectionId;
+          return (
+            <a
+              key={link.href}
+              href={link.href}
+              aria-current={isActive ? "page" : undefined}
+              className={`text-sm font-medium transition-colors duration-200 ${
+                isActive
+                  ? "text-cyan-300"
+                  : "text-neutral-300 hover:text-cyan-300"
+              }`}
+            >
+              {link.label}
+            </a>
+          );
+        })}
       </div>
 
+      {/* Social icons */}
       <motion.div
         className="hidden items-center justify-center gap-5 text-2xl md:flex"
         variants={containerVariants}
@@ -90,6 +147,7 @@ const Navbar = () => {
         ))}
       </motion.div>
 
+      {/* Mobile hamburger */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
         aria-label="Toggle menu"
@@ -99,6 +157,7 @@ const Navbar = () => {
         {isOpen ? <FiX /> : <FiMenu />}
       </button>
 
+      {/* Mobile menu */}
       {isOpen && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -106,16 +165,23 @@ const Navbar = () => {
           transition={{ duration: 0.2 }}
           className="absolute left-0 right-0 top-full mt-2 flex flex-col gap-4 rounded-2xl border border-neutral-800 bg-neutral-950/95 p-6 backdrop-blur-md md:hidden"
         >
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setIsOpen(false)}
-              className="text-lg text-neutral-200 transition hover:text-cyan-300"
-            >
-              {link.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((link) => {
+            const sectionId = link.href.replace("#", "");
+            const isActive = activeSection === sectionId;
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+                aria-current={isActive ? "page" : undefined}
+                className={`text-lg transition ${
+                  isActive ? "text-cyan-300" : "text-neutral-200 hover:text-cyan-300"
+                }`}
+              >
+                {link.label}
+              </a>
+            );
+          })}
           <div className="mt-2 flex items-center gap-5 border-t border-neutral-800 pt-4 text-2xl">
             {iconLinks.map((item, index) => (
               <a

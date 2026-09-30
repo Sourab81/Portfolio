@@ -17,35 +17,48 @@ const TechPill = ({ tech }) => (
 
 const PlaceholderImage = ({ title }) => (
   <div className="flex h-48 w-full flex-col items-center justify-center gap-3 rounded-lg border border-neutral-800 bg-gradient-to-br from-neutral-900 to-neutral-800">
-    <FiFolder className="text-5xl text-cyan-400/70" />
+    <FiFolder className="text-5xl text-cyan-400/70" aria-hidden="true" />
     <span className="px-4 text-center text-sm text-neutral-400">{title}</span>
   </div>
 );
 
-const LinkButtons = ({ project }) => (
-  <div className="flex flex-wrap gap-3">
-    {project.liveUrl && (
-      <a
-        href={project.liveUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
-      >
-        <FiExternalLink /> Live Demo
-      </a>
-    )}
-    {project.githubUrl && (
-      <a
-        href={project.githubUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-4 py-2 text-sm font-medium text-neutral-200 transition hover:border-neutral-400 hover:text-cyan-300"
-      >
-        <FiGithub /> GitHub
-      </a>
-    )}
-  </div>
+const PrivateBadge = () => (
+  <span className="inline-flex items-center gap-1.5 rounded-full border border-neutral-700 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-400">
+    <FiLock className="shrink-0 text-neutral-500" aria-hidden="true" />
+    Private – Code on request
+  </span>
 );
+
+const LinkButtons = ({ project }) => {
+  const hasLinks = project.liveUrl || project.githubUrl;
+  return (
+    <div className="flex flex-wrap gap-3">
+      {project.liveUrl && (
+        <a
+          href={project.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-500 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+          aria-label={`Live demo of ${project.title}`}
+        >
+          <FiExternalLink aria-hidden="true" /> Live Demo
+        </a>
+      )}
+      {project.githubUrl && (
+        <a
+          href={project.githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-4 py-2 text-sm font-medium text-neutral-200 transition hover:border-neutral-400 hover:text-cyan-300"
+          aria-label={`GitHub repository of ${project.title}`}
+        >
+          <FiGithub aria-hidden="true" /> GitHub
+        </a>
+      )}
+      {!hasLinks && <PrivateBadge />}
+    </div>
+  );
+};
 
 const FeaturedProject = ({ project }) => (
   <motion.div
@@ -59,8 +72,11 @@ const FeaturedProject = ({ project }) => (
       <div className="relative lg:w-1/2">
         <img
           src={project.image}
-          alt={project.title}
+          alt={`${project.title} screenshot`}
           className="h-64 w-full object-cover lg:h-full"
+          loading="lazy"
+          width={600}
+          height={400}
         />
         <span className="absolute left-4 top-4 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 px-4 py-1 text-sm font-bold text-white shadow-lg">
           &#9733; Featured Project
@@ -72,7 +88,7 @@ const FeaturedProject = ({ project }) => (
         <p className="mt-3 text-neutral-400">{project.description}</p>
 
         <div className="mt-5 flex flex-wrap gap-2">
-          {project.modules.map((module) => (
+          {project.modules?.map((module) => (
             <span
               key={module}
               className="rounded-md border border-neutral-700 bg-neutral-900/70 px-2.5 py-1 text-xs text-cyan-300"
@@ -88,21 +104,27 @@ const FeaturedProject = ({ project }) => (
           ))}
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-4 rounded-xl border border-dashed border-cyan-500/50 bg-cyan-500/5 p-4">
-          <div className="flex flex-col gap-1.5 text-sm">
-            <div className="flex items-center gap-2 text-neutral-300">
-              <FiMail className="text-cyan-400" />
-              <span className="font-medium">{project.demoCredentials.email}</span>
+        {/* Demo credentials */}
+        {project.demoCredentials && (
+          <div className="mt-6 flex flex-wrap items-center gap-4 rounded-xl border border-dashed border-cyan-500/50 bg-cyan-500/5 p-4">
+            <div className="flex flex-col gap-1.5 text-sm">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-cyan-400">
+                {project.demoCredentials.note}
+              </p>
+              <div className="flex items-center gap-2 text-neutral-300">
+                <FiMail className="text-cyan-400" aria-hidden="true" />
+                <span className="font-medium">{project.demoCredentials.email}</span>
+              </div>
+              <div className="flex items-center gap-2 text-neutral-300">
+                <FiLock className="text-cyan-400" aria-hidden="true" />
+                <span className="font-medium">{project.demoCredentials.password}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-neutral-300">
-              <FiLock className="text-cyan-400" />
-              <span className="font-medium">{project.demoCredentials.password}</span>
-            </div>
+            <span className="ml-auto rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-semibold text-cyan-300">
+              Demo Credentials
+            </span>
           </div>
-          <span className="ml-auto rounded-full bg-cyan-500/20 px-3 py-1 text-xs font-semibold text-cyan-300">
-            Demo Credentials
-          </span>
-        </div>
+        )}
 
         <div className="mt-6">
           <LinkButtons project={project} />
@@ -124,8 +146,11 @@ const ProjectCard = ({ project, index }) => (
       <div className="overflow-hidden">
         <img
           src={project.image}
-          alt={project.title}
+          alt={`${project.title} screenshot`}
           className="h-48 w-full object-cover transition duration-500 group-hover:scale-105"
+          loading="lazy"
+          width={600}
+          height={192}
         />
       </div>
     ) : (

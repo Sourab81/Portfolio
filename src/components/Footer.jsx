@@ -3,6 +3,7 @@ import { FiArrowUp } from "react-icons/fi";
 const Footer = () => {
   const links = [
     { label: "About", href: "#about" },
+    { label: "Experience", href: "#experience" },
     { label: "Skills", href: "#skills" },
     { label: "Projects", href: "#projects" },
     { label: "Contact", href: "#contact" },
@@ -15,7 +16,10 @@ const Footer = () => {
           &copy; {new Date().getFullYear()} Sourabh Malviya. All rights reserved.
         </p>
 
-        <nav className="flex flex-wrap justify-center gap-6 text-sm text-neutral-400">
+        <nav
+          aria-label="Footer navigation"
+          className="flex flex-wrap justify-center gap-6 text-sm text-neutral-400"
+        >
           {links.map((link) => (
             <a
               key={link.href}
